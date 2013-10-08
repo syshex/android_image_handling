@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black" >#FF000000</color>
+    <color name="pink" >#FFEF04D6</color>
+    <color name="orange" >#FFFF8A00</color>
+
+    <color name="square_border">#FF00FF00</color>
+
+
+</resources>

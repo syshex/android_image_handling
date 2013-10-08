@@ -80,7 +80,7 @@ class HighlightView {
         canvas.save();
         Path path = new Path();
         if (!hasFocus()) {
-            mOutlinePaint.setColor(0xFF000000);
+            mOutlinePaint.setColor(mContext.getResources().getColor(R.color.black));
             canvas.drawRect(mDrawRect, mOutlinePaint);
         } else {
             Rect viewDrawingRect = new Rect();
@@ -92,10 +92,10 @@ class HighlightView {
                         mDrawRect.top + (height / 2),
                         width / 2,
                         Path.Direction.CW);
-                mOutlinePaint.setColor(0xFFEF04D6);
+                mOutlinePaint.setColor(mContext.getResources().getColor(R.color.pink));
             } else {
                 path.addRect(new RectF(mDrawRect), Path.Direction.CW);
-                mOutlinePaint.setColor(0xFFFF8A00);
+                mOutlinePaint.setColor(mContext.getResources().getColor(R.color.square_border));
             }
             canvas.clipPath(path, Region.Op.DIFFERENCE);
             canvas.drawRect(viewDrawingRect,
