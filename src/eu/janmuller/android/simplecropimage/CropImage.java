@@ -30,6 +30,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.jni.bitmap_operations.JniBitmapHolder;
+
 import java.io.*;
 import java.util.concurrent.CountDownLatch;
 
@@ -39,7 +41,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public class CropImage extends MonitoredActivity {
 
-    final int IMAGE_MAX_SIZE = 2048;
+    private int IMAGE_MAX_SIZE = 2048;
 
     private static final String TAG = "CropImage";
     public static final String IMAGE_PATH = "image-path";
@@ -50,6 +52,7 @@ public class CropImage extends MonitoredActivity {
     public static final String OUTPUT_X = "outputX";
     public static final String OUTPUT_Y = "outputY";
     public static final String SCALE_UP_IF_NEEDED = "scaleUpIfNeeded";
+    public static final String SCALE_FILL_IF_SMALLER = "scalefill_if_smaller";
     public static final String CIRCLE_CROP = "circleCrop";
     public static final String RETURN_DATA = "return-data";
     public static final String RETURN_DATA_AS_BITMAP = "data";
@@ -67,6 +70,7 @@ public class CropImage extends MonitoredActivity {
     private int mOutputX;
     private int mOutputY;
     private boolean mScale;
+    private boolean mFillIfSmaller;
     private CropImageView mImageView;
     private ContentResolver mContentResolver;
     private Bitmap mBitmap;
@@ -114,7 +118,12 @@ public class CropImage extends MonitoredActivity {
             mImagePath = extras.getString(IMAGE_PATH);
 
             mSaveUri = getImageUri(mImagePath);
-            mBitmap = getBitmap(mImagePath);
+            try {
+                mBitmap = getBitmap(mImagePath);
+            } catch (OutOfMemoryError e) {
+                IMAGE_MAX_SIZE = 1024;
+                mBitmap = getBitmap(mImagePath);
+            }
 
             if (extras.containsKey(ASPECT_X) && extras.get(ASPECT_X) instanceof Integer) {
 
@@ -134,6 +143,7 @@ public class CropImage extends MonitoredActivity {
             mOutputY = extras.getInt(OUTPUT_Y);
             mScale = extras.getBoolean(SCALE, true);
             mScaleUp = extras.getBoolean(SCALE_UP_IF_NEEDED, true);
+            mFillIfSmaller = extras.getBoolean(SCALE_FILL_IF_SMALLER, true);
         }
 
 
@@ -171,10 +181,13 @@ public class CropImage extends MonitoredActivity {
                 new View.OnClickListener() {
                     public void onClick(View v) {
 
-                        mBitmap = Util.rotateImage(mBitmap, -90);
+                        JniBitmapHolder holder = new JniBitmapHolder(mBitmap);
+                        mBitmap.recycle();
+                        holder.rotateBitmapCcw90();
+                        mBitmap = holder.getBitmapAndFree();
                         RotateBitmap rotateBitmap = new RotateBitmap(mBitmap);
                         mImageView.setImageRotateBitmapResetBase(rotateBitmap, true);
-                        mRunFaceDetection.run();
+                        startFaceDetection();
                     }
                 });
 
@@ -182,10 +195,13 @@ public class CropImage extends MonitoredActivity {
                 new View.OnClickListener() {
                     public void onClick(View v) {
 
-                        mBitmap = Util.rotateImage(mBitmap, 90);
+                        JniBitmapHolder holder = new JniBitmapHolder(mBitmap);
+                        mBitmap.recycle();
+                        holder.rotateBitmapCw90();
+                        mBitmap = holder.getBitmapAndFree();
                         RotateBitmap rotateBitmap = new RotateBitmap(mBitmap);
                         mImageView.setImageRotateBitmapResetBase(rotateBitmap, true);
-                        mRunFaceDetection.run();
+                        startFaceDetection();
                     }
                 });
         startFaceDetection();
@@ -331,17 +347,60 @@ public class CropImage extends MonitoredActivity {
 
 		/* If the output is required to a specific size then scale or fill */
         if (mOutputX != 0 && mOutputY != 0) {
-
             if (mScale) {
+                if ( ! mFillIfSmaller ) {
+                    if (width < mOutputX && height < mOutputY) {
+                        /* Scale the image to the required dimensions */
+                        Bitmap old = croppedImage;
+                        croppedImage = Util.transform(new Matrix(),
+                                croppedImage, width, height, mScaleUp);
+                        if (old != croppedImage) {
 
-                /* Scale the image to the required dimensions */
-                Bitmap old = croppedImage;
-                croppedImage = Util.transform(new Matrix(),
-                        croppedImage, mOutputX, mOutputY, mScaleUp);
-                if (old != croppedImage) {
+                            old.recycle();
+                        }
+                    } else if (width < mOutputX && height >= mOutputY) {
+                        /* Scale the image to the required dimensions */
+                        Bitmap old = croppedImage;
+                        croppedImage = Util.transform(new Matrix(),
+                                croppedImage, width, mOutputY, mScaleUp);
+                        if (old != croppedImage) {
 
-                    old.recycle();
+                            old.recycle();
+                        }
+                    } else if (width >= mOutputX && height < mOutputY) {
+                        /* Scale the image to the required dimensions */
+                        Bitmap old = croppedImage;
+                        croppedImage = Util.transform(new Matrix(),
+                                croppedImage, mOutputX, height, mScaleUp);
+                        if (old != croppedImage) {
+
+                            old.recycle();
+                        }
+                    } else {
+                        /* Scale the image to the required dimensions */
+                        Bitmap old = croppedImage;
+                        croppedImage = Util.transform(new Matrix(),
+                                croppedImage, mOutputX, mOutputY, mScaleUp);
+                        if (old != croppedImage) {
+
+                            old.recycle();
+                        }
+                    }
+
+                    Log.d(TAG, "Cropping image at size: " + croppedImage.getWidth() + "x" + croppedImage.getHeight() );
+                } else {
+                    /* Scale the image to the required dimensions */
+                    Bitmap old = croppedImage;
+                    croppedImage = Util.transform(new Matrix(),
+                            croppedImage, mOutputX, mOutputY, mScaleUp);
+                    if (old != croppedImage) {
+
+                        old.recycle();
+                    }
+                    Log.d(TAG, "Cropping image at size: " + croppedImage.getWidth() + "x" + croppedImage.getHeight() );
                 }
+
+
             } else {
 
 				/* Don't scale the image crop it to the size requested.
