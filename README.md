@@ -1,6 +1,8 @@
 android_image_handling
 ======================
 
+# NOT READY TO USE YET !!!
+
 This like started out as a fork of : parallel-6/gradle_simple_crop_image_lib . This lib had a few problems, specially when related to memory management. This lead me to look for alternatives to handling images without running into OutOfMemory errors all the time. I came accross this post by [Android-Developer on StackOverflow](http://stackoverflow.com/questions/18250951/jni-bitmap-operations-for-helping-to-avoid-oom-when-using-large-images/) which has some really cool native c code that was easy to modify and use with simple_crop_image_lib.
 
 So in this lib we have a native implementation of a BitmapHolder that allows for the following operations done in Native:
