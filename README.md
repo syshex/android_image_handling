@@ -3,7 +3,7 @@ android_image_handling
 
 # NOT READY TO USE YET !!!!!!
 
-This started out as a fork of : parallel-6/gradle_simple_crop_image_lib . This lib had a few problems, specially related to memory management when handling big images if a programmer didn't want to lose much resolution. This lead me to look for alternatives to handling images without running into OutOfMemory errors all the time. I came accross this post by [Android-Developer on StackOverflow](http://stackoverflow.com/questions/18250951/jni-bitmap-operations-for-helping-to-avoid-oom-when-using-large-images/) which has some really cool native c code that was easy to modify and use with simple_crop_image_lib.
+This started out as a fork of : parallel-6/gradle_simple_crop_image_lib . This lib had a few problems, specially related to memory management when handling big images if a programmer didn't want to lose much resolution. This lead me to look for alternatives to handling images without running into OutOfMemory errors all the time. I came accross this post by [Android-Developer on StackOverflow](http://stackoverflow.com/questions/18250951/jni-bitmap-operations-for-helping-to-avoid-oom-when-using-large-images/) which has some really cool native c code that was easy to modify and use with simple_crop_image_lib, this StackOverflow post eventually turned into a lib aswell:  [AndroidJniBitmapOperations](https://github.com/AndroidDeveloperLB/AndroidJniBitmapOperations).
 
 So in this lib we have a native implementation of a BitmapHolder that allows for the following operations done in Native:
 - [x] Clock Wise Rotation
@@ -19,8 +19,9 @@ So, overall, this is not my original work, it is bits and pieces from other peop
 
 ## Original Work :
 
-- https://github.com/sparallel-6/gradle_simple_crop_image_lib
+- https://github.com/AndroidDeveloperLB/AndroidJniBitmapOperations
 - http://stackoverflow.com/questions/18250951/jni-bitmap-operations-for-helping-to-avoid-oom-when-using-large-images/
+- https://github.com/sparallel-6/gradle_simple_crop_image_lib
 - many many many other posts on StackOverflow and everywhere on the web.
 
 
