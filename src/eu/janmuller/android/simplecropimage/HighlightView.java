@@ -119,52 +119,55 @@ class HighlightView {
                             x + mResizeDrawableDiagonal.getIntrinsicWidth(),
                             y + mResizeDrawableDiagonal.getIntrinsicHeight());
                     mResizeDrawableDiagonal.draw(canvas);
-                } else {
-                    int left = mDrawRect.left + 1;
-                    int right = mDrawRect.right + 1;
-                    int top = mDrawRect.top + 4;
-                    int bottom = mDrawRect.bottom + 3;
-
-                    int widthWidth =
-                            mResizeDrawableWidth.getIntrinsicWidth() / 2;
-                    int widthHeight =
-                            mResizeDrawableWidth.getIntrinsicHeight() / 2;
-                    int heightHeight =
-                            mResizeDrawableHeight.getIntrinsicHeight() / 2;
-                    int heightWidth =
-                            mResizeDrawableHeight.getIntrinsicWidth() / 2;
-
-                    int xMiddle = mDrawRect.left
-                            + ((mDrawRect.right - mDrawRect.left) / 2);
-                    int yMiddle = mDrawRect.top
-                            + ((mDrawRect.bottom - mDrawRect.top) / 2);
-
-                    mResizeDrawableWidth.setBounds(left - widthWidth,
-                            yMiddle - widthHeight,
-                            left + widthWidth,
-                            yMiddle + widthHeight);
-                    mResizeDrawableWidth.draw(canvas);
-
-                    mResizeDrawableWidth.setBounds(right - widthWidth,
-                            yMiddle - widthHeight,
-                            right + widthWidth,
-                            yMiddle + widthHeight);
-                    mResizeDrawableWidth.draw(canvas);
-
-                    mResizeDrawableHeight.setBounds(xMiddle - heightWidth,
-                            top - heightHeight,
-                            xMiddle + heightWidth,
-                            top + heightHeight);
-                    mResizeDrawableHeight.draw(canvas);
-
-                    mResizeDrawableHeight.setBounds(xMiddle - heightWidth,
-                            bottom - heightHeight,
-                            xMiddle + heightWidth,
-                            bottom + heightHeight);
-                    mResizeDrawableHeight.draw(canvas);
                 }
             }
         }
+        drawStrechArrows(canvas);
+    }
+
+    private void drawStrechArrows(Canvas canvas) {
+        int left = mDrawRect.left + 1;
+        int right = mDrawRect.right + 1;
+        int top = mDrawRect.top + 4;
+        int bottom = mDrawRect.bottom + 3;
+
+        int widthWidth =
+                mResizeDrawableWidth.getIntrinsicWidth() / 2;
+        int widthHeight =
+                mResizeDrawableWidth.getIntrinsicHeight() / 2;
+        int heightHeight =
+                mResizeDrawableHeight.getIntrinsicHeight() / 2;
+        int heightWidth =
+                mResizeDrawableHeight.getIntrinsicWidth() / 2;
+
+        int xMiddle = mDrawRect.left
+                + ((mDrawRect.right - mDrawRect.left) / 2);
+        int yMiddle = mDrawRect.top
+                + ((mDrawRect.bottom - mDrawRect.top) / 2);
+
+        mResizeDrawableWidth.setBounds(left - widthWidth,
+                yMiddle - widthHeight,
+                left + widthWidth,
+                yMiddle + widthHeight);
+        mResizeDrawableWidth.draw(canvas);
+
+        mResizeDrawableWidth.setBounds(right - widthWidth,
+                yMiddle - widthHeight,
+                right + widthWidth,
+                yMiddle + widthHeight);
+        mResizeDrawableWidth.draw(canvas);
+
+        mResizeDrawableHeight.setBounds(xMiddle - heightWidth,
+                top - heightHeight,
+                xMiddle + heightWidth,
+                top + heightHeight);
+        mResizeDrawableHeight.draw(canvas);
+
+        mResizeDrawableHeight.setBounds(xMiddle - heightWidth,
+                bottom - heightHeight,
+                xMiddle + heightWidth,
+                bottom + heightHeight);
+        mResizeDrawableHeight.draw(canvas);
     }
 
     public ModifyMode getMode() {
